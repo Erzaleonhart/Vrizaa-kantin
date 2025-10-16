@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kantin Digital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .item-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        /* Sembunyikan view secara default */
+        .view {
+            display: none;
+        }
+        .modal-content {
+             transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Auth Container -->
+    <div id="auth-container" class="min-h-screen flex items-center justify-center view">
+        <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
+            <!-- Login Form -->
+            <div id="login-form-container">
+                <h2 class="text-2xl font-bold text-center mb-6">Login Kantin Digital</h2>
+                <form id="login-form">
+                    <div class="mb-4">
+                        <label for="login-username" class="block text-sm font-medium text-gray-700">Username</label>
+                        <input type="text" id="login-username" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div class="mb-6">
+                        <label for="login-password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" id="login-password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700">Login</button>
+                </form>
+                <p class="text-center text-sm mt-4">
+                    Belum punya akun? <a href="#" id="show-register" class="font-medium text-blue-600 hover:text-blue-500">Daftar di sini</a>
+                </p>
+            </div>
+            <!-- Register Form -->
+            <div id="register-form-container" class="hidden">
+                <h2 class="text-2xl font-bold text-center mb-6">Daftar Akun Baru</h2>
+                <form id="register-form">
+                    <div class="mb-4">
+                        <label for="register-username" class="block text-sm font-medium text-gray-700">Username</label>
+                        <input type="text" id="register-username" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div class="mb-4">
+                        <label for="register-password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" id="register-password" required minlength="6" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                         <p class="text-xs text-gray-500 mt-1">Minimal 6 karakter.</p>
+                    </div>
+                    <div class="mb-6">
+                        <label for="register-role" class="block text-sm font-medium text-gray-700">Daftar sebagai</label>
+                        <select id="register-role" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="siswa">Siswa</option>
+                            <option value="penjual">Penjual</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-md font-semibold hover:bg-green-700">Daftar</button>
+                </form>
+                <p class="text-center text-sm mt-4">
+                    Sudah punya akun? <a href="#" id="show-login" class="font-medium text-blue-600 hover:text-blue-500">Login di sini</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div id="app-container" class="container mx-auto p-4 md:p-8 view">
+        <!-- Header -->
+        <header class="flex flex-col sm:flex-row justify-between sm:items-center mb-8 border-b pb-4 gap-4">
+             <div>
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Kantin Digital</h1>
+                <p id="welcome-message" class="text-md text-gray-600 mt-1"></p>
+             </div>
+             <div class="flex items-center">
+                <span id="user-info" class="text-gray-700 mr-4 hidden sm:inline"></span>
+                <button id="logout-button" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600">Logout</button>
+             </div>
+        </header>
+
+        <main id="main-content">
+            <!-- Dashboards will be injected here -->
+        </main>
+    </div>
+    
+    <!-- Modals -->
+    <div id="checkout-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 p-4">
+        <div class="modal-content bg-white rounded-lg shadow-xl p-8 max-w-sm w-full text-center transform scale-95 opacity-0">
+            <svg class="w-16 h-16 mx-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <h3 class="text-2xl font-bold mt-4">Pesanan Berhasil!</h3>
+            <p class="text-gray-600 mt-2">Terima kasih telah memesan. Pesanan Anda sedang kami siapkan.</p>
+            <button data-modal-close="checkout-modal" class="mt-6 bg-blue-600 text-white rounded-lg py-2 px-6 font-semibold hover:bg-blue-700">Tutup</button>
+        </div>
+    </div>
+    
+    <div id="add-item-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 p-4">
+        <div class="modal-content bg-white rounded-lg shadow-xl p-8 max-w-lg w-full transform scale-95 opacity-0">
+            <h3 class="text-2xl font-bold mb-6">Tambah Menu Baru</h3>
+            <form id="add-item-form">
+                <div class="mb-4">
+                    <label for="item-name" class="block text-sm font-medium text-gray-700">Nama Makanan/Minuman</label>
+                    <input type="text" id="item-name" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="item-price" class="block text-sm font-medium text-gray-700">Harga</label>
+                        <input type="number" id="item-price" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                    </div>
+                    <div>
+                        <label for="item-stock" class="block text-sm font-medium text-gray-700">Stok</label>
+                        <input type="number" id="item-stock" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                    </div>
+                </div>
+                 <div class="mb-6">
+                    <label for="item-image" class="block text-sm font-medium text-gray-700">Gambar Menu</label>
+                    <input type="file" id="item-image" accept="image/*" required class="mt-1 block w-full text-sm text-gray-500
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-full file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-blue-50 file:text-blue-700
+                        hover:file:bg-blue-100
+                    ">
+                </div>
+                <div class="flex justify-end gap-4">
+                    <button type="button" data-modal-close="add-item-modal" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg font-semibold hover:bg-gray-400">Batal</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+    // --- SCRIPT UTAMA ---
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // =================================================================
+        // STATE MANAGEMENT & LOCALSTORAGE
+        // =================================================================
+        let state = {
+            currentUser: null,
+            users: [],
+            menuItems: [],
+            transactions: [],
+            cart: [],
+        };
+
+        const db = {
+            pull: () => {
+                state.currentUser = JSON.parse(localStorage.getItem('kantin_currentUser')) || null;
+                state.users = JSON.parse(localStorage.getItem('kantin_users')) || [];
+                state.menuItems = JSON.parse(localStorage.getItem('kantin_menuItems')) || [];
+                state.transactions = JSON.parse(localStorage.getItem('kantin_transactions')) || [];
+            },
+            push: () => {
+                localStorage.setItem('kantin_currentUser', JSON.stringify(state.currentUser));
+                localStorage.setItem('kantin_users', JSON.stringify(state.users));
+                localStorage.setItem('kantin_menuItems', JSON.stringify(state.menuItems));
+                localStorage.setItem('kantin_transactions', JSON.stringify(state.transactions));
+            },
+            init: () => {
+                db.pull();
+                // Buat akun admin 'gimoy' jika belum ada
+                if (!state.users.some(u => u.username === 'gimoy')) {
+                    state.users.push({ id: 1, username: 'gimoy', password: 'admin123', role: 'admin' });
+                }
+                if (state.menuItems.length === 0) {
+                    state.menuItems = [
+                        {'id': 1, 'sellerId': 0, 'name': 'Nasi Goreng Spesial', 'price': 15000, 'stock': 20, 'image': 'https://placehold.co/300x200/F4D03F/333333?text=Nasi+Goreng'},
+                        {'id': 2, 'sellerId': 0, 'name': 'Mie Ayam Bakso', 'price': 12000, 'stock': 25, 'image': 'https://placehold.co/300x200/F5B041/333333?text=Mie+Ayam'},
+                        {'id': 3, 'sellerId': 0, 'name': 'Ayam Geprek', 'price': 18000, 'stock': 15, 'image': 'https://placehold.co/300x200/E57373/333333?text=Ayam+Geprek'},
+                        {'id': 4, 'sellerId': 0, 'name': 'Es Teh Manis', 'price': 5000, 'stock': 50, 'image': 'https://placehold.co/300x200/A9CCE3/333333?text=Es+Teh'},
+                        {'id': 5, 'sellerId': 0, 'name': 'Jus Alpukat', 'price': 12000, 'stock': 30, 'image': 'https://placehold.co/300x200/A2D9CE/333333?text=Jus+Alpukat'}
+                    ];
+                }
+                db.push();
+            }
+        };
+
+
+        // =================================================================
+        // ELEMENT SELECTORS
+        // =================================================================
+        const authContainer = document.getElementById('auth-container');
+        const appContainer = document.getElementById('app-container');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const showRegisterLink = document.getElementById('show-register');
+        const showLoginLink = document.getElementById('show-login');
+        const loginFormContainer = document.getElementById('login-form-container');
+        const registerFormContainer = document.getElementById('register-form-container');
+        const mainContent = document.getElementById('main-content');
+        const logoutButton = document.getElementById('logout-button');
+        const welcomeMessage = document.getElementById('welcome-message');
+        
+        // =================================================================
+        // HELPER FUNCTIONS
+        // =================================================================
+        const formatCurrency = (amount) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
+        const formatDate = (timestamp) => new Date(timestamp).toLocaleString('id-ID');
+        const showView = (viewId) => {
+            document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+            const view = document.getElementById(viewId);
+            view.style.display = 'block';
+             if (viewId === 'app-container') {
+                view.style.display = 'flex';
+                view.style.flexDirection = 'column';
+            }
+        };
+
+        const openModal = (modalId) => {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+            const modalContent = modal.querySelector('.modal-content');
+            modal.style.display = 'flex';
+            setTimeout(() => modalContent.classList.remove('scale-95', 'opacity-0'), 10);
+        };
+
+        const closeModal = (modalId) => {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+            const modalContent = modal.querySelector('.modal-content');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => modal.style.display = 'none', 300);
+        };
+
+        // =================================================================
+        // AUTHENTICATION LOGIC
+        // =================================================================
+        const handleLogin = (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            const user = state.users.find(u => u.username === username && u.password === password);
+            if (user) {
+                state.currentUser = user;
+                db.push();
+                renderApp();
+            } else {
+                alert('Username atau password salah!');
+            }
+        };
+
+        const handleRegister = (e) => {
+            e.preventDefault();
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            const role = document.getElementById('register-role').value;
+            if (state.users.some(u => u.username === username)) {
+                alert('Username sudah terdaftar!');
+                return;
+            }
+            const newUser = { id: Date.now(), username, password, role };
+            state.users.push(newUser);
+            db.push();
+            alert('Registrasi berhasil! Silakan login.');
+            showLoginLink.click();
+            loginForm.reset();
+            registerForm.reset();
+        };
+        
+        const handleLogout = () => {
+            state.currentUser = null;
+            state.cart = [];
+            db.push();
+            mainContent.innerHTML = '';
+            showView('auth-container');
+        };
+
+
+        // =================================================================
+        // RENDER FUNCTIONS (Dynamically create HTML based on role)
+        // =================================================================
+        const renderApp = () => {
+            if (!state.currentUser) {
+                showView('auth-container');
+                return;
+            }
+            welcomeMessage.textContent = `Selamat datang, ${state.currentUser.username}! (Peran: ${state.currentUser.role})`;
+            mainContent.innerHTML = '';
+            switch (state.currentUser.role) {
+                case 'siswa': renderSiswaDashboard(); break;
+                case 'penjual': renderPenjualDashboard(); break;
+                case 'admin': renderAdminDashboard(); break;
+            }
+            showView('app-container');
+        };
+
+        // --- SISWA DASHBOARD ---
+        const renderSiswaDashboard = () => {
+            mainContent.innerHTML = `
+                <div class="mb-6">
+                    <input type="search" id="search-bar" placeholder="Cari makanan atau minuman..." class="w-full p-3 border border-gray-300 rounded-lg">
+                </div>
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <div class="w-full lg:w-2/3">
+                        <h2 class="text-2xl font-bold mb-4 border-b pb-2">Menu Makanan & Minuman</h2>
+                        <div id="menu-container" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+                    </div>
+                    <div class="w-full lg:w-1/3">
+                        <div class="bg-white rounded-lg shadow-lg p-6 sticky top-8">
+                            <h2 class="text-2xl font-bold mb-4 border-b pb-2">Keranjang Anda</h2>
+                            <div id="cart-items-container" class="custom-scrollbar max-h-64 overflow-y-auto pr-2">
+                                <!-- Konten keranjang akan dirender oleh JavaScript -->
+                            </div>
+                            <div class="mt-6 border-t pt-4">
+                                <div class="flex justify-between items-center text-lg font-bold">
+                                    <span>Total</span><span id="cart-total">Rp 0</span>
+                                </div>
+                                <button id="checkout-button" class="w-full bg-blue-600 text-white rounded-lg py-3 mt-4 font-semibold hover:bg-blue-700 disabled:bg-gray-400">Pesan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-12">
+                    <h2 class="text-2xl font-bold mb-4 border-b pb-2">Riwayat Pembelian Anda</h2>
+                    <div id="history-container" class="bg-white rounded-lg shadow-lg p-6"></div>
+                </div>
+            `;
+            renderMenuForSiswa(state.menuItems);
+            renderCart();
+            renderSiswaHistory();
+            document.getElementById('search-bar').addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filteredItems = state.menuItems.filter(item => item.name.toLowerCase().includes(searchTerm));
+                renderMenuForSiswa(filteredItems);
+            });
+            document.getElementById('checkout-button').addEventListener('click', handleCheckout);
+            document.getElementById('menu-container').addEventListener('click', (e) => {
+                if (e.target.classList.contains('add-to-cart-btn')) handleAddToCart(parseInt(e.target.dataset.id));
+            });
+            document.getElementById('cart-items-container').addEventListener('click', (e) => {
+                const button = e.target;
+                const itemId = parseInt(button.dataset.id);
+                if (button.classList.contains('remove-from-cart-btn')) handleRemoveFromCart(itemId);
+                if (button.classList.contains('inc-btn')) handleChangeQuantity(itemId, 1);
+                if (button.classList.contains('dec-btn')) handleChangeQuantity(itemId, -1);
+            });
+            document.getElementById('history-container').addEventListener('click', (e) => {
+                if (e.target.classList.contains('cancel-order-btn')) {
+                    handleCancelOrder(parseInt(e.target.dataset.id));
+                }
+            });
+        };
+        
+        const renderMenuForSiswa = (itemsToRender) => {
+            const container = document.getElementById('menu-container');
+            if (itemsToRender.length === 0) {
+                 container.innerHTML = '<p class="text-gray-500 col-span-full text-center">Menu tidak ditemukan.</p>';
+                 return;
+            }
+            container.innerHTML = itemsToRender.map(item => `
+                <div class="item-card bg-white rounded-lg shadow-md overflow-hidden ${item.stock === 0 ? 'opacity-50' : ''}">
+                    <div class="relative">
+                        <img src="${item.image}" alt="${item.name}" class="w-full h-40 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/300x200?text=Gambar+Rusak';">
+                        ${item.stock === 0 ? '<div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white font-bold text-lg">HABIS</div>' : ''}
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-lg font-bold">${item.name}</h3>
+                        <p class="text-gray-500 mb-2">Stok: ${item.stock}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-semibold text-blue-600">${formatCurrency(item.price)}</span>
+                            <button data-id="${item.id}" class="add-to-cart-btn bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 text-sm" ${item.stock === 0 ? 'disabled' : ''}>Tambah</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        const renderCart = () => {
+            const container = document.getElementById('cart-items-container');
+            const totalEl = document.getElementById('cart-total');
+            const checkoutBtn = document.getElementById('checkout-button');
+            if (state.cart.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">Keranjang masih kosong.</p>';
+                checkoutBtn.disabled = true;
+            } else {
+                checkoutBtn.disabled = false;
+                container.innerHTML = state.cart.map(item => `
+                    <div class="flex justify-between items-center mb-3">
+                        <div>
+                            <p class="font-semibold">${item.name}</p>
+                            <p class="text-sm text-gray-600">${formatCurrency(item.price)}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="flex items-center border rounded">
+                                <button data-id="${item.id}" class="quantity-change-btn dec-btn px-2 py-1">-</button>
+                                <span class="px-2">${item.quantity}</span>
+                                <button data-id="${item.id}" class="quantity-change-btn inc-btn px-2 py-1">+</button>
+                            </div>
+                            <button data-id="${item.id}" class="remove-from-cart-btn font-bold text-red-500 text-xl">&times;</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            totalEl.textContent = formatCurrency(state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0));
+        };
+
+        const renderSiswaHistory = () => {
+            const container = document.getElementById('history-container');
+            const userTransactions = state.transactions.filter(t => t.userId === state.currentUser.id);
+            if(userTransactions.length === 0){
+                container.innerHTML = '<p class="text-gray-500">Anda belum pernah melakukan pembelian.</p>';
+                return;
+            }
+            container.innerHTML = `
+                <div class="overflow-x-auto"><table class="min-w-full bg-white">
+                    <thead class="bg-gray-200"><tr>
+                        <th class="py-2 px-4 text-left">Tanggal</th>
+                        <th class="py-2 px-4 text-left">Item</th>
+                        <th class="py-2 px-4 text-left">Total</th>
+                        <th class="py-2 px-4 text-left">Status</th>
+                        <th class="py-2 px-4 text-left">Aksi</th>
+                    </tr></thead>
+                    <tbody>${userTransactions.reverse().map(t => `
+                        <tr class="border-b">
+                            <td class="py-2 px-4">${formatDate(t.timestamp)}</td>
+                            <td class="py-2 px-4">${t.items.map(i => `${i.name} (x${i.quantity})`).join(', ')}</td>
+                            <td class="py-2 px-4">${formatCurrency(t.total)}</td>
+                            <td class="py-2 px-4">
+                                ${t.status === 'cancelled'
+                                    ? '<span class="font-semibold text-red-600">Dibatalkan</span>'
+                                    : '<span class="font-semibold text-green-600">Selesai</span>'
+                                }
+                            </td>
+                            <td class="py-2 px-4">
+                                ${t.status !== 'cancelled'
+                                    ? `<button data-id="${t.id}" class="cancel-order-btn bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600">Batalkan</button>`
+                                    : '<span>-</span>'
+                                }
+                            </td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table></div>`;
+        };
+        
+        const renderMyMenu = (containerId) => {
+            const container = document.getElementById(containerId);
+            const myItems = state.menuItems.filter(item => item.sellerId === state.currentUser.id);
+            if (myItems.length === 0) {
+                container.innerHTML = '<p class="text-gray-500">Anda belum menambahkan menu. Klik "Tambah Menu" untuk memulai.</p>';
+                return;
+            }
+            container.innerHTML = `
+                <div class="overflow-x-auto"><table class="min-w-full bg-white">
+                    <thead class="bg-gray-200"><tr><th class="p-2 text-left">Nama</th><th class="p-2 text-left">Harga</th><th class="p-2 text-left">Stok</th><th class="p-2 text-left">Aksi</th></tr></thead>
+                    <tbody>${myItems.map(item => `
+                        <tr class="border-b"><td class="p-2">${item.name}</td><td class="p-2">${formatCurrency(item.price)}</td><td class="p-2">${item.stock}</td>
+                        <td class="p-2"><button data-id="${item.id}" class="delete-item-btn text-red-500 hover:text-red-700 font-semibold">Hapus</button></td></tr>`).join('')}
+                    </tbody>
+                </table></div>
+            `;
+            container.querySelectorAll('.delete-item-btn').forEach(btn => btn.addEventListener('click', (e) => handleDeleteMenuItem(parseInt(e.target.dataset.id))));
+        };
+
+        // --- PENJUAL DASHBOARD ---
+        const renderPenjualDashboard = () => {
+            mainContent.innerHTML = `
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Kelola Menu Anda</h2>
+                    <button id="add-item-btn" class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700">Tambah Menu</button>
+                </div>
+                <div id="my-menu-container" class="bg-white rounded-lg shadow-lg p-6"></div>
+                 <div class="mt-12">
+                    <h2 class="text-2xl font-bold mb-4 border-b pb-2">Riwayat Transaksi Toko Anda</h2>
+                    <div id="penjual-history-container" class="bg-white rounded-lg shadow-lg p-6"></div>
+                </div>
+            `;
+            renderMyMenu('my-menu-container');
+            renderPenjualHistory();
+            document.getElementById('add-item-btn').addEventListener('click', () => openModal('add-item-modal'));
+        };
+
+        const renderPenjualHistory = () => {
+             const container = document.getElementById('penjual-history-container');
+             const myItemIds = state.menuItems.filter(i => i.sellerId === state.currentUser.id).map(i => i.id);
+             const myTransactions = state.transactions.filter(t => t.items.some(i => myItemIds.includes(i.id)));
+             
+             if(myTransactions.length === 0) {
+                container.innerHTML = '<p class="text-gray-500">Belum ada transaksi untuk menu Anda.</p>';
+                return;
+             }
+
+             container.innerHTML = `
+                <div class="overflow-x-auto"><table class="min-w-full bg-white">
+                    <thead class="bg-gray-200"><tr><th class="p-2 text-left">Tanggal</th><th class="p-2 text-left">Pembeli</th><th class="p-2 text-left">Item Terjual</th><th class="p-2 text-left">Total</th></tr></thead>
+                    <tbody>${myTransactions.reverse().map(t => {
+                        const buyer = state.users.find(u => u.id === t.userId);
+                        const itemsSold = t.items.filter(i => myItemIds.includes(i.id));
+                        return `
+                        <tr class="border-b"><td class="p-2">${formatDate(t.timestamp)}</td><td class="p-2">${buyer ? buyer.username : 'N/A'}</td>
+                        <td class="p-2">${itemsSold.map(i => `${i.name} (x${i.quantity})`).join(', ')}</td>
+                        <td class="p-2">${formatCurrency(itemsSold.reduce((sum, i) => sum + (i.price * i.quantity), 0))}</td></tr>
+                        `}).join('')}
+                    </tbody>
+                </table></div>`;
+        };
+
+        // --- ADMIN DASHBOARD ---
+        const renderAdminDashboard = () => {
+            mainContent.innerHTML = `
+                <div class="mb-12">
+                    <h2 class="text-2xl font-bold mb-4">Manajemen Pengguna</h2>
+                    <div id="user-management-container" class="bg-white rounded-lg shadow-lg p-6"></div>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold mb-4">Laporan Transaksi Keseluruhan</h2>
+                    <div id="admin-transactions-container" class="bg-white rounded-lg shadow-lg p-6"></div>
+                </div>
+            `;
+            renderUserManagement();
+            renderAdminTransactions();
+        };
+
+        const renderUserManagement = () => {
+            const container = document.getElementById('user-management-container');
+            container.innerHTML = `
+                <div class="overflow-x-auto"><table class="min-w-full bg-white">
+                    <thead class="bg-gray-200"><tr><th class="p-2 text-left">Username</th><th class="p-2 text-left">Peran</th><th class="p-2 text-left">Aksi</th></tr></thead>
+                    <tbody>${state.users.map(user => `
+                        <tr class="border-b"><td class="p-2">${user.username}</td><td class="p-2">${user.role}</td><td class="p-2">
+                        ${user.role !== 'admin' ? `<button data-id="${user.id}" class="delete-user-btn text-red-500 hover:text-red-700 font-semibold">Hapus</button>` : 'Tidak ada aksi'}
+                        </td></tr>`).join('')}
+                    </tbody>
+                </table></div>`;
+            container.querySelectorAll('.delete-user-btn').forEach(btn => btn.addEventListener('click', (e) => handleDeleteUser(parseInt(e.target.dataset.id))));
+        };
+        
+        const renderAdminTransactions = () => {
+             const container = document.getElementById('admin-transactions-container');
+             if(state.transactions.length === 0){
+                container.innerHTML = '<p class="text-gray-500">Belum ada transaksi sama sekali.</p>';
+                return;
+             }
+             container.innerHTML = `
+                <div class="overflow-x-auto"><table class="min-w-full bg-white">
+                    <thead class="bg-gray-200"><tr><th class="p-2 text-left">Tanggal</th><th class="p-2 text-left">Pembeli</th><th class="p-2 text-left">Total</th></tr></thead>
+                    <tbody>${state.transactions.slice().reverse().map(t => {
+                        const buyer = state.users.find(u => u.id === t.userId);
+                        return `<tr class="border-b"><td class="p-2">${formatDate(t.timestamp)}</td><td class="p-2">${buyer ? buyer.username : 'Akun Dihapus'}</td><td class="p-2">${formatCurrency(t.total)}</td></tr>`
+                    }).join('')}</tbody>
+                </table></div>`;
+        };
+
+        // =================================================================
+        // ACTIONS (Siswa, Penjual, Admin)
+        // =================================================================
+        // Siswa Actions
+        const handleAddToCart = (itemId) => {
+            const itemInMenu = state.menuItems.find(item => item.id === itemId);
+            const itemInCart = state.cart.find(item => item.id === itemId);
+            if (itemInMenu.stock <= (itemInCart ? itemInCart.quantity : 0)) { alert('Stok tidak mencukupi!'); return; }
+            if (itemInCart) { itemInCart.quantity++; } else { state.cart.push({ ...itemInMenu, quantity: 1 }); }
+            renderCart();
+        };
+        const handleRemoveFromCart = (itemId) => { state.cart = state.cart.filter(item => item.id !== itemId); renderCart(); };
+        const handleChangeQuantity = (itemId, change) => {
+            const itemInCart = state.cart.find(item => item.id === itemId);
+            if (!itemInCart) return;
+            if (change > 0) {
+                const itemInMenu = state.menuItems.find(item => item.id === itemId);
+                if (itemInCart.quantity >= itemInMenu.stock) { alert('Stok tidak mencukupi!'); return; }
+            }
+            itemInCart.quantity += change;
+            if (itemInCart.quantity <= 0) { handleRemoveFromCart(itemId); } else { renderCart(); }
+        };
+        const handleCheckout = () => {
+            const newTransaction = { id: Date.now(), userId: state.currentUser.id, items: [...state.cart], total: state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0), timestamp: Date.now(), status: 'completed' };
+            state.transactions.push(newTransaction);
+            state.cart.forEach(cartItem => {
+                const menuItem = state.menuItems.find(item => item.id === cartItem.id);
+                if (menuItem) menuItem.stock -= cartItem.quantity;
+            });
+            state.cart = [];
+            db.push();
+            openModal('checkout-modal');
+            renderApp();
+        };
+        const handleCancelOrder = (transactionId) => {
+            if (!confirm('Apakah Anda yakin ingin membatalkan pesanan ini? Stok akan dikembalikan.')) {
+                return;
+            }
+            const transaction = state.transactions.find(t => t.id === transactionId);
+            if (transaction && transaction.status !== 'cancelled') {
+                transaction.items.forEach(orderItem => {
+                    const menuItem = state.menuItems.find(item => item.id === orderItem.id);
+                    if (menuItem) {
+                        menuItem.stock += orderItem.quantity;
+                    }
+                });
+                transaction.status = 'cancelled';
+                db.push();
+                renderSiswaDashboard();
+            } else {
+                alert('Pesanan tidak ditemukan atau sudah dibatalkan.');
+            }
+        };
+
+        // Penjual Actions
+        const handleAddMenuItem = async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('item-name').value;
+            const price = parseInt(document.getElementById('item-price').value);
+            const stock = parseInt(document.getElementById('item-stock').value);
+            const imageFile = document.getElementById('item-image').files[0];
+            if (!imageFile) {
+                alert('Silakan pilih gambar untuk menu.');
+                return;
+            }
+            const toBase64 = file => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+            try {
+                const imageBase64 = await toBase64(imageFile);
+                const newItem = {
+                    id: Date.now(),
+                    sellerId: state.currentUser.id,
+                    name, price, stock,
+                    image: imageBase64
+                };
+                state.menuItems.push(newItem);
+                db.push();
+                e.target.reset();
+                closeModal('add-item-modal');
+                renderApp();
+            } catch (error) {
+                console.error("Error converting image to Base64:", error);
+                alert("Gagal memproses gambar. Silakan coba lagi.");
+            }
+        };
+        const handleDeleteMenuItem = (itemId) => {
+            if (confirm('Apakah Anda yakin ingin menghapus menu ini?')) {
+                state.menuItems = state.menuItems.filter(item => item.id !== itemId);
+                db.push();
+                renderApp();
+            }
+        };
+
+        // Admin Actions
+        const handleDeleteUser = (userId) => {
+            if (confirm('Apakah Anda yakin ingin menghapus akun ini? Ini tidak dapat diurungkan.')) {
+                state.users = state.users.filter(user => user.id !== userId);
+                db.push();
+                renderAdminDashboard();
+            }
+        };
+
+
+        // =================================================================
+        // INITIALIZATION & EVENT LISTENERS
+        // =================================================================
+        db.init();
+        
+        showRegisterLink.addEventListener('click', (e) => { e.preventDefault(); loginFormContainer.classList.add('hidden'); registerFormContainer.classList.remove('hidden'); });
+        showLoginLink.addEventListener('click', (e) => { e.preventDefault(); registerFormContainer.classList.add('hidden'); loginFormContainer.classList.remove('hidden'); });
+        loginForm.addEventListener('submit', handleLogin);
+        registerForm.addEventListener('submit', handleRegister);
+        logoutButton.addEventListener('click', handleLogout);
+        document.getElementById('add-item-form').addEventListener('submit', handleAddMenuItem);
+        document.body.addEventListener('click', (e) => {
+            if (e.target.dataset.modalClose) closeModal(e.target.dataset.modalClose);
+        });
+        
+        renderApp(); // Initial render
+    });
+    </script>
+</body>
+</html>
+
+
