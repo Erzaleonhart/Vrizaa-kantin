@@ -3,699 +3,828 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kantin Digital</title>
+    <title>Sistem Kantin Digital Terintegrasi</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .item-card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .item-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-        /* Sembunyikan view secara default */
-        .view {
-            display: none;
-        }
-        .modal-content {
-             transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-        }
+        body { font-family: 'Poppins', sans-serif; background-color: #f3f4f6; }
+        .hidden-section { display: none !important; }
+        .animate-fade { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="text-gray-800 min-h-screen flex flex-col">
 
-    <!-- Auth Container -->
-    <div id="auth-container" class="min-h-screen flex items-center justify-center view">
-        <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
-            <!-- Login Form -->
-            <div id="login-form-container">
-                <h2 class="text-2xl font-bold text-center mb-6">Login Kantin Digital</h2>
-                <form id="login-form">
-                    <div class="mb-4">
-                        <label for="login-username" class="block text-sm font-medium text-gray-700">Username</label>
-                        <input type="text" id="login-username" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div class="mb-6">
-                        <label for="login-password" class="block text-sm font-medium text-gray-700">Password</label>
-                        <input type="password" id="login-password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700">Login</button>
-                </form>
-                <p class="text-center text-sm mt-4">
-                    Belum punya akun? <a href="#" id="show-register" class="font-medium text-blue-600 hover:text-blue-500">Daftar di sini</a>
-                </p>
+    <!-- ================= LOGIN SECTION ================= -->
+    <div id="section-login" class="flex-1 flex items-center justify-center p-4 animate-fade">
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+            <div class="text-center mb-8">
+                <i class="fa-solid fa-utensils text-orange-500 text-5xl mb-4"></i>
+                <h1 class="text-2xl font-bold text-gray-800">Kantin Digital</h1>
+                <p class="text-gray-500 text-sm">Silakan masuk untuk melanjutkan</p>
             </div>
-            <!-- Register Form -->
-            <div id="register-form-container" class="hidden">
-                <h2 class="text-2xl font-bold text-center mb-6">Daftar Akun Baru</h2>
-                <form id="register-form">
-                    <div class="mb-4">
-                        <label for="register-username" class="block text-sm font-medium text-gray-700">Username</label>
-                        <input type="text" id="register-username" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div class="mb-4">
-                        <label for="register-password" class="block text-sm font-medium text-gray-700">Password</label>
-                        <input type="password" id="register-password" required minlength="6" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                         <p class="text-xs text-gray-500 mt-1">Minimal 6 karakter.</p>
-                    </div>
-                    <div class="mb-6">
-                        <label for="register-role" class="block text-sm font-medium text-gray-700">Daftar sebagai</label>
-                        <select id="register-role" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                            <option value="siswa">Siswa</option>
-                            <option value="penjual">Penjual</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-md font-semibold hover:bg-green-700">Daftar</button>
-                </form>
-                <p class="text-center text-sm mt-4">
-                    Sudah punya akun? <a href="#" id="show-login" class="font-medium text-blue-600 hover:text-blue-500">Login di sini</a>
-                </p>
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                    <input type="text" id="login-username" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Username..." required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="login-password" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Password..." required>
+                </div>
+                <button type="submit" class="w-full bg-orange-500 text-white py-2.5 rounded-lg font-bold hover:bg-orange-600 transition shadow-md">Masuk</button>
+            </form>
+            
+            <div class="mt-4 text-center text-sm">
+                <p class="text-gray-500">Belum punya akun?</p>
+                <button onclick="switchAuthMode('register')" class="text-orange-500 font-bold hover:underline">Buat Akun Baru</button>
+            </div>
+
+            <div class="mt-6 p-4 bg-blue-50 rounded-lg text-xs text-blue-800 border border-blue-100 text-left">
+                <p class="font-bold mb-1">Akun Default:</p>
+                <ul class="list-disc pl-4 space-y-1">
+                    <li>Admin: <b>gimoy / admin123</b></li>
+                </ul>
             </div>
         </div>
     </div>
 
-    <!-- App Container -->
-    <div id="app-container" class="container mx-auto p-4 md:p-8 view">
-        <!-- Header -->
-        <header class="flex flex-col sm:flex-row justify-between sm:items-center mb-8 border-b pb-4 gap-4">
-             <div>
-                <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Kantin Digital</h1>
-                <p id="welcome-message" class="text-md text-gray-600 mt-1"></p>
-             </div>
-             <div class="flex items-center">
-                <span id="user-info" class="text-gray-700 mr-4 hidden sm:inline"></span>
-                <button id="logout-button" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600">Logout</button>
-             </div>
-        </header>
+    <!-- ================= REGISTER SECTION ================= -->
+    <div id="section-register" class="hidden-section flex-1 flex items-center justify-center p-4 animate-fade">
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+            <div class="text-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-800">Buat Akun</h1>
+                <p class="text-gray-500 text-sm">Daftar sebagai Siswa atau Penjual</p>
+            </div>
+            <form onsubmit="handleRegister(event)" class="space-y-3">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap (Nama Toko)</label>
+                    <input type="text" id="reg-name" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Contoh: Kantin Bu Budi" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                    <input type="text" id="reg-username" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Username unik" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="reg-password" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Password" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Daftar Sebagai</label>
+                    <select id="reg-role" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none bg-white">
+                        <option value="siswa">Siswa (Pembeli)</option>
+                        <option value="penjual">Penjual (Buka Kantin)</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-green-600 text-white py-2.5 rounded-lg font-bold hover:bg-green-700 transition shadow-md mt-2">Daftar Sekarang</button>
+            </form>
+            
+            <div class="mt-4 text-center text-sm">
+                <p class="text-gray-500">Sudah punya akun?</p>
+                <button onclick="switchAuthMode('login')" class="text-orange-500 font-bold hover:underline">Kembali ke Login</button>
+            </div>
+        </div>
+    </div>
 
-        <main id="main-content">
-            <!-- Dashboards will be injected here -->
+    <!-- ================= ADMIN DASHBOARD ================= -->
+    <div id="section-admin" class="hidden-section min-h-screen flex flex-col">
+        <nav class="bg-gray-900 text-white px-6 py-4 flex justify-between items-center shadow-lg">
+            <div class="font-bold text-xl"><i class="fa-solid fa-user-shield mr-2"></i>Panel Admin</div>
+            <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm">Logout</button>
+        </nav>
+        <div class="flex-1 p-6 max-w-7xl mx-auto w-full space-y-8">
+            <!-- Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
+                    <h3 class="text-gray-500 text-sm">Total Menu (Global)</h3>
+                    <p class="text-2xl font-bold" id="admin-total-menu">0</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-green-500">
+                    <h3 class="text-gray-500 text-sm">Total Penjualan (Global)</h3>
+                    <p class="text-2xl font-bold" id="admin-total-sales">Rp 0</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-purple-500">
+                    <h3 class="text-gray-500 text-sm">Total User</h3>
+                    <p class="text-2xl font-bold" id="admin-total-users">0</p>
+                </div>
+            </div>
+
+            <!-- Manajemen Semua Menu -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold border-b-2 border-orange-500 pb-1">Semua Menu Kantin</h2>
+                    <button onclick="openAddMenuModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm"><i class="fa-solid fa-plus mr-2"></i>Tambah Menu Admin</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-gray-50 text-gray-600 uppercase border-b">
+                            <tr>
+                                <th class="p-3">Nama</th>
+                                <th class="p-3">Penjual</th>
+                                <th class="p-3">Harga</th>
+                                <th class="p-3 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-menu-list" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Manajemen User -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h2 class="text-xl font-bold border-b-2 border-purple-500 pb-1 mb-4">Daftar Pengguna</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-gray-50 text-gray-600 uppercase border-b">
+                            <tr>
+                                <th class="p-3">Username</th>
+                                <th class="p-3">Role</th>
+                                <th class="p-3">Nama Lengkap</th>
+                                <th class="p-3 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-user-list" class="divide-y"></tbody>
+                    </table>
+                </div>
+                <div class="mt-4 pt-4 border-t">
+                    <button onclick="resetAllData()" class="text-red-600 text-sm font-bold hover:underline"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Reset Semua Data Aplikasi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= PENJUAL DASHBOARD ================= -->
+    <div id="section-seller" class="hidden-section min-h-screen flex flex-col">
+        <nav class="bg-green-700 text-white px-6 py-4 flex justify-between items-center shadow-lg">
+            <div class="font-bold text-xl flex items-center gap-2">
+                <i class="fa-solid fa-store"></i>
+                <span id="seller-shop-name">Dapur Penjual</span>
+            </div>
+            <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm">Logout</button>
+        </nav>
+        
+        <div class="flex-1 p-4 max-w-6xl mx-auto w-full space-y-8">
+            <!-- BAGIAN 1: Antrian Pesanan -->
+            <div>
+                <h2 class="text-2xl font-bold mb-6 text-gray-800 border-l-4 border-green-600 pl-3">Antrian Pesanan</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gray-100 p-4 rounded-xl border border-gray-200">
+                        <h3 class="font-bold text-gray-700 mb-4 flex items-center gap-2"><i class="fa-solid fa-inbox"></i> Pesanan Masuk</h3>
+                        <div id="queue-incoming" class="space-y-3 min-h-[150px]"></div>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                        <h3 class="font-bold text-blue-700 mb-4 flex items-center gap-2"><i class="fa-solid fa-fire-burner"></i> Sedang Dimasak</h3>
+                        <div id="queue-processing" class="space-y-3 min-h-[150px]"></div>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-xl border border-green-100">
+                        <h3 class="font-bold text-green-700 mb-4 flex items-center gap-2"><i class="fa-solid fa-check-circle"></i> Siap Diambil</h3>
+                        <div id="queue-ready" class="space-y-3 min-h-[150px]"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BAGIAN 2: Manajemen Menu Sendiri -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="p-6 border-b bg-gray-50 flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-orange-500"></i> Menu Jualan Saya
+                    </h2>
+                    <button onclick="openAddMenuModal()" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 text-sm font-bold shadow flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> Tambah Menu
+                    </button>
+                </div>
+                <div class="p-6">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-gray-100 text-gray-600 uppercase">
+                                <tr>
+                                    <th class="p-3 rounded-l-lg">Menu</th>
+                                    <th class="p-3">Kategori</th>
+                                    <th class="p-3">Harga</th>
+                                    <th class="p-3 rounded-r-lg text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="seller-menu-list" class="divide-y divide-gray-100">
+                                <!-- Rendered by JS -->
+                            </tbody>
+                        </table>
+                        <div id="seller-menu-empty" class="hidden text-center py-8 text-gray-400 italic">
+                            Belum ada menu yang dijual. Klik "Tambah Menu" untuk mulai berjualan.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Riwayat -->
+            <div class="mt-8">
+                <button onclick="document.getElementById('seller-history-container').classList.toggle('hidden')" class="flex items-center gap-2 text-gray-600 font-bold hover:text-gray-900">
+                    <i class="fa-solid fa-history"></i> Lihat Riwayat Penjualan
+                </button>
+                <div id="seller-history-container" class="hidden mt-4 bg-white rounded-lg shadow overflow-hidden">
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-gray-50 text-gray-600 border-b">
+                            <tr>
+                                <th class="p-3">ID</th>
+                                <th class="p-3">Siswa</th>
+                                <th class="p-3">Menu</th>
+                                <th class="p-3">Total</th>
+                                <th class="p-3">Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="seller-history-list" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SISWA DASHBOARD ================= -->
+    <div id="section-student" class="hidden-section bg-gray-50 min-h-screen pb-24">
+        <nav class="bg-white shadow-sm sticky top-0 z-30">
+            <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-utensils text-orange-500 text-xl"></i>
+                    <span class="font-bold text-lg">Kantin<span class="text-orange-500">Kita</span></span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleModal('modal-history')" class="text-gray-500 hover:text-orange-500 relative">
+                        <i class="fa-solid fa-receipt text-xl"></i>
+                    </button>
+                    <button onclick="toggleCart()" class="relative text-gray-500 hover:text-orange-500">
+                        <i class="fa-solid fa-cart-shopping text-xl"></i>
+                        <span id="cart-badge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full hidden">0</span>
+                    </button>
+                    <button onclick="handleLogout()" class="text-sm text-red-500 font-medium ml-2">Keluar</button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="max-w-5xl mx-auto px-4 py-6">
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-800">Halo, <span id="student-name">Siswa</span>! ??</h1>
+                <p class="text-gray-500 text-sm">Cari jajan favoritmu di sini.</p>
+            </div>
+
+            <div class="flex gap-2 overflow-x-auto hide-scrollbar mb-6 pb-2">
+                <button onclick="filterMenu('all')" class="px-4 py-2 bg-orange-500 text-white rounded-full text-sm shadow-sm whitespace-nowrap filter-btn active" data-cat="all">Semua</button>
+                <button onclick="filterMenu('makanan')" class="px-4 py-2 bg-white text-gray-600 border rounded-full text-sm shadow-sm whitespace-nowrap filter-btn" data-cat="makanan">Makanan</button>
+                <button onclick="filterMenu('minuman')" class="px-4 py-2 bg-white text-gray-600 border rounded-full text-sm shadow-sm whitespace-nowrap filter-btn" data-cat="minuman">Minuman</button>
+                <button onclick="filterMenu('snack')" class="px-4 py-2 bg-white text-gray-600 border rounded-full text-sm shadow-sm whitespace-nowrap filter-btn" data-cat="snack">Snack</button>
+            </div>
+
+            <div id="student-menu-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- Rendered by JS -->
+            </div>
         </main>
     </div>
-    
-    <!-- Modals -->
-    <div id="checkout-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 p-4">
-        <div class="modal-content bg-white rounded-lg shadow-xl p-8 max-w-sm w-full text-center transform scale-95 opacity-0">
-            <svg class="w-16 h-16 mx-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <h3 class="text-2xl font-bold mt-4">Pesanan Berhasil!</h3>
-            <p class="text-gray-600 mt-2">Terima kasih telah memesan. Pesanan Anda sedang kami siapkan.</p>
-            <button data-modal-close="checkout-modal" class="mt-6 bg-blue-600 text-white rounded-lg py-2 px-6 font-semibold hover:bg-blue-700">Tutup</button>
-        </div>
-    </div>
-    
-    <div id="add-item-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 p-4">
-        <div class="modal-content bg-white rounded-lg shadow-xl p-8 max-w-lg w-full transform scale-95 opacity-0">
-            <h3 class="text-2xl font-bold mb-6">Tambah Menu Baru</h3>
-            <form id="add-item-form">
-                <div class="mb-4">
-                    <label for="item-name" class="block text-sm font-medium text-gray-700">Nama Makanan/Minuman</label>
-                    <input type="text" id="item-name" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- Modal Add Menu (Shared for Admin & Seller) -->
+    <div id="modal-add-menu" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-md p-6 animate-fade">
+            <h2 class="text-xl font-bold mb-4" id="modal-title-menu">Tambah Menu Baru</h2>
+            <form onsubmit="handleAddMenu(event)" class="space-y-3">
+                <input type="text" id="new-menu-name" placeholder="Nama Menu" class="w-full border p-2 rounded" required>
+                <select id="new-menu-cat" class="w-full border p-2 rounded">
+                    <option value="makanan">Makanan</option>
+                    <option value="minuman">Minuman</option>
+                    <option value="snack">Snack</option>
+                </select>
+                <input type="number" id="new-menu-price" placeholder="Harga" class="w-full border p-2 rounded" required>
+                <div class="grid grid-cols-4 gap-2 text-2xl text-center border p-2 rounded">
+                    <div onclick="selectIcon(this, '??')" class="cursor-pointer hover:bg-gray-100 rounded p-1 selected-icon">??</div>
+                    <div onclick="selectIcon(this, '??')" class="cursor-pointer hover:bg-gray-100 rounded p-1">??</div>
+                    <div onclick="selectIcon(this, '??')" class="cursor-pointer hover:bg-gray-100 rounded p-1">??</div>
+                    <div onclick="selectIcon(this, '??')" class="cursor-pointer hover:bg-gray-100 rounded p-1">??</div>
+                    <div onclick="selectIcon(this, '?')" class="cursor-pointer hover:bg-gray-100 rounded p-1">?</div>
+                    <div onclick="selectIcon(this, '??')" class="cursor-pointer hover:bg-gray-100 rounded p-1">??</div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label for="item-price" class="block text-sm font-medium text-gray-700">Harga</label>
-                        <input type="number" id="item-price" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
-                    </div>
-                    <div>
-                        <label for="item-stock" class="block text-sm font-medium text-gray-700">Stok</label>
-                        <input type="number" id="item-stock" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
-                    </div>
-                </div>
-                 <div class="mb-6">
-                    <label for="item-image" class="block text-sm font-medium text-gray-700">Gambar Menu</label>
-                    <input type="file" id="item-image" accept="image/*" required class="mt-1 block w-full text-sm text-gray-500
-                        file:mr-4 file:py-2 file:px-4
-                        file:rounded-full file:border-0
-                        file:text-sm file:font-semibold
-                        file:bg-blue-50 file:text-blue-700
-                        hover:file:bg-blue-100
-                    ">
-                </div>
-                <div class="flex justify-end gap-4">
-                    <button type="button" data-modal-close="add-item-modal" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg font-semibold hover:bg-gray-400">Batal</button>
-                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700">Simpan</button>
+                <input type="hidden" id="new-menu-icon" value="??">
+                <div class="flex gap-2 mt-4">
+                    <button type="button" onclick="toggleModal('modal-add-menu')" class="flex-1 bg-gray-200 py-2 rounded text-gray-700">Batal</button>
+                    <button type="submit" class="flex-1 bg-blue-600 text-white py-2 rounded font-bold">Jual Menu Ini</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Modal Keranjang (Student) -->
+    <div id="cart-sidebar" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50" onclick="toggleCart()"></div>
+        <div class="absolute right-0 top-0 h-full w-full md:w-96 bg-white shadow-xl flex flex-col animate-fade">
+            <div class="p-4 border-b flex justify-between items-center bg-gray-50">
+                <h2 class="font-bold text-lg">Keranjang Saya</h2>
+                <button onclick="toggleCart()"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div id="cart-items-container" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
+            <div class="p-4 border-t bg-gray-50">
+                <div class="flex justify-between font-bold text-lg mb-4">
+                    <span>Total</span>
+                    <span id="cart-total-display">Rp 0</span>
+                </div>
+                <button onclick="handleCheckout()" id="btn-checkout" class="w-full bg-orange-500 text-white py-3 rounded-xl font-bold hover:bg-orange-600 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">Pesan Sekarang</button>
+            </div>
+        </div>
+    </div>
 
+    <!-- Modal History (Student) -->
+    <div id="modal-history" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-md p-6 max-h-[80vh] flex flex-col animate-fade">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Riwayat Pesanan</h2>
+                <button onclick="toggleModal('modal-history')" class="text-gray-500"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="student-history-list" class="overflow-y-auto flex-1 space-y-3"></div>
+        </div>
+    </div>
+
+    <!-- Struk Modal -->
+    <div id="receipt-modal" class="fixed inset-0 bg-black bg-opacity-70 z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-80 p-6 rounded-lg shadow-2xl animate-fade text-center">
+            <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                <i class="fa-solid fa-check text-xl"></i>
+            </div>
+            <h3 class="font-bold text-xl mb-1">Pesanan Terkirim!</h3>
+            <p class="text-xs text-gray-500 mb-4">Pesanan masuk antrian penjual.</p>
+            <div class="bg-gray-50 p-3 rounded border border-dashed border-gray-300 text-left text-sm mb-4">
+                <div class="flex justify-between mb-1"><span>ID:</span> <span id="receipt-id" class="font-mono font-bold"></span></div>
+                <div class="flex justify-between border-t pt-1 mt-1 font-bold"><span>Total:</span> <span id="receipt-total"></span></div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="document.getElementById('receipt-modal').classList.add('hidden')" class="flex-1 bg-gray-200 py-2 rounded text-sm">Tutup</button>
+                <button onclick="window.print()" class="flex-1 bg-blue-600 text-white py-2 rounded text-sm"><i class="fa-solid fa-print mr-1"></i> Cetak</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
-    // --- SCRIPT UTAMA ---
-    document.addEventListener('DOMContentLoaded', () => {
-
-        // =================================================================
-        // STATE MANAGEMENT & LOCALSTORAGE
-        // =================================================================
-        let state = {
-            currentUser: null,
-            users: [],
-            menuItems: [],
-            transactions: [],
-            cart: [],
-        };
-
-        const db = {
-            pull: () => {
-                state.currentUser = JSON.parse(localStorage.getItem('kantin_currentUser')) || null;
-                state.users = JSON.parse(localStorage.getItem('kantin_users')) || [];
-                state.menuItems = JSON.parse(localStorage.getItem('kantin_menuItems')) || [];
-                state.transactions = JSON.parse(localStorage.getItem('kantin_transactions')) || [];
-            },
-            push: () => {
-                localStorage.setItem('kantin_currentUser', JSON.stringify(state.currentUser));
-                localStorage.setItem('kantin_users', JSON.stringify(state.users));
-                localStorage.setItem('kantin_menuItems', JSON.stringify(state.menuItems));
-                localStorage.setItem('kantin_transactions', JSON.stringify(state.transactions));
-            },
+        // --- 1. DATABASE MOCKUP (LocalStorage) ---
+        const DB = {
             init: () => {
-                db.pull();
-                // Buat akun admin 'gimoy' jika belum ada
-                if (!state.users.some(u => u.username === 'gimoy')) {
-                    state.users.push({ id: 1, username: 'gimoy', password: 'admin123', role: 'admin' });
-                }
-                if (state.menuItems.length === 0) {
-                    state.menuItems = [
-                        {'id': 1, 'sellerId': 0, 'name': 'Nasi Goreng Spesial', 'price': 15000, 'stock': 20, 'image': 'https://placehold.co/300x200/F4D03F/333333?text=Nasi+Goreng'},
-                        {'id': 2, 'sellerId': 0, 'name': 'Mie Ayam Bakso', 'price': 12000, 'stock': 25, 'image': 'https://placehold.co/300x200/F5B041/333333?text=Mie+Ayam'},
-                        {'id': 3, 'sellerId': 0, 'name': 'Ayam Geprek', 'price': 18000, 'stock': 15, 'image': 'https://placehold.co/300x200/E57373/333333?text=Ayam+Geprek'},
-                        {'id': 4, 'sellerId': 0, 'name': 'Es Teh Manis', 'price': 5000, 'stock': 50, 'image': 'https://placehold.co/300x200/A9CCE3/333333?text=Es+Teh'},
-                        {'id': 5, 'sellerId': 0, 'name': 'Jus Alpukat', 'price': 12000, 'stock': 30, 'image': 'https://placehold.co/300x200/A2D9CE/333333?text=Jus+Alpukat'}
+                if (!localStorage.getItem('k_users')) {
+                    const defaultUsers = [
+                        { id: 'u1', username: 'gimoy', password: 'admin123', role: 'admin', name: 'Super Admin' },
+                        { id: 'u2', username: 'penjual', password: 'penjual', role: 'penjual', name: 'Ibu Kantin' },
+                        { id: 'u3', username: 'siswa', password: 'siswa', role: 'siswa', name: 'Budi Santoso' }
                     ];
+                    localStorage.setItem('k_users', JSON.stringify(defaultUsers));
+                } else {
+                    // Pastikan admin gimoy ada
+                    let existingUsers = JSON.parse(localStorage.getItem('k_users'));
+                    const adminExists = existingUsers.find(u => u.username === 'gimoy');
+                    if (!adminExists) {
+                        existingUsers.unshift({ id: 'u1_new', username: 'gimoy', password: 'admin123', role: 'admin', name: 'Super Admin' });
+                        localStorage.setItem('k_users', JSON.stringify(existingUsers));
+                    }
                 }
-                db.push();
-            }
+
+                if (!localStorage.getItem('k_menu')) {
+                    // Update: Menu default diberi sellerId 'penjual'
+                    const defaultMenu = [
+                        { id: 1, name: "Nasi Goreng", category: "makanan", price: 15000, icon: "??", sellerId: 'penjual' },
+                        { id: 2, name: "Mie Ayam", category: "makanan", price: 12000, icon: "??", sellerId: 'penjual' },
+                        { id: 3, name: "Es Teh", category: "minuman", price: 4000, icon: "??", sellerId: 'penjual' },
+                        { id: 4, name: "Roti Bakar", category: "snack", price: 10000, icon: "??", sellerId: 'penjual' },
+                        { id: 5, name: "Ayam Geprek", category: "makanan", price: 18000, icon: "??", sellerId: 'penjual' }
+                    ];
+                    localStorage.setItem('k_menu', JSON.stringify(defaultMenu));
+                }
+                
+                // Migrasi data lama jika belum ada sellerId
+                let currentMenu = JSON.parse(localStorage.getItem('k_menu'));
+                let needSave = false;
+                currentMenu.forEach(m => {
+                    if(!m.sellerId) { m.sellerId = 'penjual'; needSave = true; }
+                });
+                if(needSave) localStorage.setItem('k_menu', JSON.stringify(currentMenu));
+
+                if (!localStorage.getItem('k_orders')) {
+                    localStorage.setItem('k_orders', JSON.stringify([]));
+                }
+            },
+            get: (key) => JSON.parse(localStorage.getItem(key) || '[]'),
+            set: (key, val) => localStorage.setItem(key, JSON.stringify(val)),
+            currentUser: null
         };
 
-
-        // =================================================================
-        // ELEMENT SELECTORS
-        // =================================================================
-        const authContainer = document.getElementById('auth-container');
-        const appContainer = document.getElementById('app-container');
-        const loginForm = document.getElementById('login-form');
-        const registerForm = document.getElementById('register-form');
-        const showRegisterLink = document.getElementById('show-register');
-        const showLoginLink = document.getElementById('show-login');
-        const loginFormContainer = document.getElementById('login-form-container');
-        const registerFormContainer = document.getElementById('register-form-container');
-        const mainContent = document.getElementById('main-content');
-        const logoutButton = document.getElementById('logout-button');
-        const welcomeMessage = document.getElementById('welcome-message');
+        // --- 2. APP STATE ---
+        let cart = [];
         
-        // =================================================================
-        // HELPER FUNCTIONS
-        // =================================================================
-        const formatCurrency = (amount) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
-        const formatDate = (timestamp) => new Date(timestamp).toLocaleString('id-ID');
-        const showView = (viewId) => {
-            document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
-            const view = document.getElementById(viewId);
-            view.style.display = 'block';
-             if (viewId === 'app-container') {
-                view.style.display = 'flex';
-                view.style.flexDirection = 'column';
-            }
-        };
+        // --- 3. INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            DB.init();
+            checkSession();
+        });
 
-        const openModal = (modalId) => {
-            const modal = document.getElementById(modalId);
-            if (!modal) return;
-            const modalContent = modal.querySelector('.modal-content');
-            modal.style.display = 'flex';
-            setTimeout(() => modalContent.classList.remove('scale-95', 'opacity-0'), 10);
-        };
-
-        const closeModal = (modalId) => {
-            const modal = document.getElementById(modalId);
-            if (!modal) return;
-            const modalContent = modal.querySelector('.modal-content');
-            modalContent.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => modal.style.display = 'none', 300);
-        };
-
-        // =================================================================
-        // AUTHENTICATION LOGIC
-        // =================================================================
-        const handleLogin = (e) => {
+        // --- 4. AUTH & REGISTRATION ---
+        function handleLogin(e) {
             e.preventDefault();
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
-            const user = state.users.find(u => u.username === username && u.password === password);
+            const u = document.getElementById('login-username').value;
+            const p = document.getElementById('login-password').value;
+            
+            const users = DB.get('k_users');
+            const user = users.find(x => x.username === u && x.password === p);
+
             if (user) {
-                state.currentUser = user;
-                db.push();
-                renderApp();
+                localStorage.setItem('k_session', JSON.stringify(user));
+                loadDashboard(user);
             } else {
                 alert('Username atau password salah!');
             }
-        };
+        }
 
-        const handleRegister = (e) => {
+        function handleRegister(e) {
             e.preventDefault();
-            const username = document.getElementById('register-username').value;
-            const password = document.getElementById('register-password').value;
-            const role = document.getElementById('register-role').value;
-            if (state.users.some(u => u.username === username)) {
-                alert('Username sudah terdaftar!');
+            const name = document.getElementById('reg-name').value;
+            const user = document.getElementById('reg-username').value;
+            const pass = document.getElementById('reg-password').value;
+            const role = document.getElementById('reg-role').value;
+
+            const users = DB.get('k_users');
+            if(users.some(u => u.username === user)) {
+                alert('Username sudah dipakai, silakan pilih yang lain.');
                 return;
             }
-            const newUser = { id: Date.now(), username, password, role };
-            state.users.push(newUser);
-            db.push();
+
+            const newUser = {
+                id: 'u_' + Date.now(),
+                username: user,
+                password: pass,
+                role: role,
+                name: name
+            };
+
+            users.push(newUser);
+            DB.set('k_users', users);
             alert('Registrasi berhasil! Silakan login.');
-            showLoginLink.click();
-            loginForm.reset();
-            registerForm.reset();
-        };
-        
-        const handleLogout = () => {
-            state.currentUser = null;
-            state.cart = [];
-            db.push();
-            mainContent.innerHTML = '';
-            showView('auth-container');
-        };
+            e.target.reset();
+            switchAuthMode('login');
+        }
 
+        function switchAuthMode(mode) {
+            document.getElementById('section-login').classList.toggle('hidden-section', mode === 'register');
+            document.getElementById('section-register').classList.toggle('hidden-section', mode !== 'register');
+        }
 
-        // =================================================================
-        // RENDER FUNCTIONS (Dynamically create HTML based on role)
-        // =================================================================
-        const renderApp = () => {
-            if (!state.currentUser) {
-                showView('auth-container');
-                return;
+        function checkSession() {
+            const session = localStorage.getItem('k_session');
+            if (session) loadDashboard(JSON.parse(session));
+            else showSection('section-login');
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('k_session');
+            cart = [];
+            location.reload();
+        }
+
+        function loadDashboard(user) {
+            DB.currentUser = user;
+            document.getElementById('section-login').classList.add('hidden-section');
+            document.getElementById('section-register').classList.add('hidden-section');
+            
+            if (user.role === 'admin') {
+                showSection('section-admin');
+                renderAdminDashboard();
+            } else if (user.role === 'penjual') {
+                showSection('section-seller');
+                document.getElementById('seller-shop-name').innerText = user.name;
+                renderSellerDashboard();
+                setInterval(() => renderSellerDashboard(false), 5000); // Auto refresh queue only
+            } else if (user.role === 'siswa') {
+                showSection('section-student');
+                document.getElementById('student-name').innerText = user.name;
+                renderStudentMenu();
+                renderStudentHistory();
             }
-            welcomeMessage.textContent = `Selamat datang, ${state.currentUser.username}! (Peran: ${state.currentUser.role})`;
-            mainContent.innerHTML = '';
-            switch (state.currentUser.role) {
-                case 'siswa': renderSiswaDashboard(); break;
-                case 'penjual': renderPenjualDashboard(); break;
-                case 'admin': renderAdminDashboard(); break;
-            }
-            showView('app-container');
-        };
+        }
 
-        // --- SISWA DASHBOARD ---
-        const renderSiswaDashboard = () => {
-            mainContent.innerHTML = `
-                <div class="mb-6">
-                    <input type="search" id="search-bar" placeholder="Cari makanan atau minuman..." class="w-full p-3 border border-gray-300 rounded-lg">
-                </div>
-                <div class="flex flex-col lg:flex-row gap-8">
-                    <div class="w-full lg:w-2/3">
-                        <h2 class="text-2xl font-bold mb-4 border-b pb-2">Menu Makanan & Minuman</h2>
-                        <div id="menu-container" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+        function showSection(id) {
+            document.querySelectorAll('body > div').forEach(el => {
+                if(el.id.startsWith('section-') || el.id === 'login' || el.id === 'register') el.classList.add('hidden-section');
+            });
+            document.getElementById(id).classList.remove('hidden-section');
+        }
+
+        // --- 5. ADMIN LOGIC ---
+        function renderAdminDashboard() {
+            const menu = DB.get('k_menu');
+            const users = DB.get('k_users');
+            const orders = DB.get('k_orders');
+
+            document.getElementById('admin-total-menu').innerText = menu.length;
+            document.getElementById('admin-total-users').innerText = users.length;
+            const totalSales = orders.filter(o => o.status === 'done').reduce((acc, cur) => acc + cur.total, 0);
+            document.getElementById('admin-total-sales').innerText = formatRupiah(totalSales);
+
+            document.getElementById('admin-menu-list').innerHTML = menu.map(m => `
+                <tr class="hover:bg-gray-50 border-b">
+                    <td class="p-3 flex items-center gap-2"><span class="text-2xl">${m.icon}</span> ${m.name}</td>
+                    <td class="p-3"><span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-bold">${m.sellerId || 'Global'}</span></td>
+                    <td class="p-3">${formatRupiah(m.price)}</td>
+                    <td class="p-3 text-center"><button onclick="deleteMenu(${m.id})" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+
+            document.getElementById('admin-user-list').innerHTML = users.map(u => `
+                <tr class="hover:bg-gray-50 border-b">
+                    <td class="p-3 font-bold">${u.username}</td>
+                    <td class="p-3"><span class="px-2 py-1 rounded text-xs font-bold ${u.role==='admin'?'bg-purple-100 text-purple-600':u.role==='penjual'?'bg-green-100 text-green-600':'bg-blue-100 text-blue-600'}">${u.role}</span></td>
+                    <td class="p-3">${u.name}</td>
+                    <td class="p-3 text-center">${u.username !== 'gimoy' ? `<button onclick="deleteUser('${u.id}')" class="text-red-500"><i class="fa-solid fa-trash"></i></button>` : '-'}</td>
+                </tr>
+            `).join('');
+        }
+
+        // --- 6. SHARED MENU LOGIC (Admin & Seller) ---
+        function openAddMenuModal() {
+            const title = DB.currentUser.role === 'penjual' ? 'Tambah Menu Jualan Saya' : 'Tambah Menu Admin';
+            document.getElementById('modal-title-menu').innerText = title;
+            document.getElementById('new-menu-name').value = '';
+            document.getElementById('new-menu-price').value = '';
+            toggleModal('modal-add-menu');
+        }
+
+        function handleAddMenu(e) {
+            e.preventDefault();
+            const name = document.getElementById('new-menu-name').value;
+            const cat = document.getElementById('new-menu-cat').value;
+            const price = parseInt(document.getElementById('new-menu-price').value);
+            const icon = document.getElementById('new-menu-icon').value;
+            
+            // PENTING: Set pemilik menu sesuai yang login
+            const sellerId = DB.currentUser.username;
+
+            const menu = DB.get('k_menu');
+            menu.push({ id: Date.now(), name, category: cat, price, icon, sellerId });
+            DB.set('k_menu', menu);
+            
+            toggleModal('modal-add-menu');
+            
+            if(DB.currentUser.role === 'admin') renderAdminDashboard();
+            if(DB.currentUser.role === 'penjual') renderSellerDashboard();
+        }
+
+        function deleteMenu(id) {
+            if(!confirm('Hapus menu ini?')) return;
+            let menu = DB.get('k_menu');
+            
+            // Validasi kepemilikan jika bukan admin
+            if (DB.currentUser.role !== 'admin') {
+                const target = menu.find(m => m.id === id);
+                if(target && target.sellerId !== DB.currentUser.username) {
+                    alert("Anda tidak bisa menghapus menu milik orang lain!");
+                    return;
+                }
+            }
+            
+            menu = menu.filter(m => m.id !== id);
+            DB.set('k_menu', menu);
+            
+            if(DB.currentUser.role === 'admin') renderAdminDashboard();
+            if(DB.currentUser.role === 'penjual') renderSellerDashboard();
+        }
+
+        // --- 7. SELLER LOGIC ---
+        function renderSellerDashboard(renderMenuTable = true) {
+            const orders = DB.get('k_orders');
+            const menu = DB.get('k_menu');
+
+            // Render Queue (Hanya menampilkan pesanan yang berisi item dari penjual ini? 
+            // Sederhananya di aplikasi ini: semua pesanan masuk ke semua penjual, 
+            // tapi idealnya difilter. Di sini kita tampilkan semua dulu agar flow mudah dipahami)
+            const incoming = orders.filter(o => o.status === 'waiting');
+            const processing = orders.filter(o => o.status === 'process');
+            const ready = orders.filter(o => o.status === 'ready');
+            const history = orders.filter(o => o.status === 'done');
+
+            document.getElementById('queue-incoming').innerHTML = incoming.length ? incoming.map(o => createOrderCard(o, 'waiting')).join('') : '<div class="text-gray-400 text-center text-sm italic">Kosong</div>';
+            document.getElementById('queue-processing').innerHTML = processing.length ? processing.map(o => createOrderCard(o, 'process')).join('') : '<div class="text-gray-400 text-center text-sm italic">Kosong</div>';
+            document.getElementById('queue-ready').innerHTML = ready.length ? ready.map(o => createOrderCard(o, 'ready')).join('') : '<div class="text-gray-400 text-center text-sm italic">Kosong</div>';
+
+            document.getElementById('seller-history-list').innerHTML = history.slice().reverse().map(o => `
+                <tr class="border-b">
+                    <td class="p-3 text-xs font-mono">${o.id.substr(-6)}</td>
+                    <td class="p-3 font-medium">${o.studentName}</td>
+                    <td class="p-3 text-xs text-gray-600">${o.items.map(i => i.name).join(', ')}</td>
+                    <td class="p-3 font-bold text-green-600">${formatRupiah(o.total)}</td>
+                    <td class="p-3 text-xs text-gray-500">${new Date(o.date).toLocaleTimeString()}</td>
+                </tr>
+            `).join('');
+
+            // Render My Menu
+            if (renderMenuTable) {
+                const myMenus = menu.filter(m => m.sellerId === DB.currentUser.username);
+                const tbody = document.getElementById('seller-menu-list');
+                const emptyMsg = document.getElementById('seller-menu-empty');
+                
+                if (myMenus.length === 0) {
+                    tbody.innerHTML = '';
+                    emptyMsg.classList.remove('hidden');
+                } else {
+                    emptyMsg.classList.add('hidden');
+                    tbody.innerHTML = myMenus.map(m => `
+                        <tr class="hover:bg-orange-50 border-b transition">
+                            <td class="p-3 flex items-center gap-3">
+                                <span class="text-2xl bg-gray-100 w-10 h-10 rounded-full flex items-center justify-center">${m.icon}</span> 
+                                <span class="font-medium">${m.name}</span>
+                            </td>
+                            <td class="p-3"><span class="bg-white border px-2 py-1 rounded text-xs uppercase tracking-wider text-gray-500">${m.category}</span></td>
+                            <td class="p-3 font-bold text-gray-700">${formatRupiah(m.price)}</td>
+                            <td class="p-3 text-center">
+                                <button onclick="deleteMenu(${m.id})" class="w-8 h-8 rounded-full bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            }
+        }
+
+        function createOrderCard(order, status) {
+            let btnAction = '';
+            if(status === 'waiting') btnAction = `<button onclick="updateOrderStatus('${order.id}', 'process')" class="w-full bg-blue-500 text-white py-1.5 rounded text-sm mt-2 hover:bg-blue-600 font-medium shadow-sm">Terima & Masak</button>`;
+            else if(status === 'process') btnAction = `<button onclick="updateOrderStatus('${order.id}', 'ready')" class="w-full bg-green-500 text-white py-1.5 rounded text-sm mt-2 hover:bg-green-600 font-medium shadow-sm">Selesai Masak</button>`;
+            else if(status === 'ready') btnAction = `<button onclick="updateOrderStatus('${order.id}', 'done')" class="w-full bg-gray-700 text-white py-1.5 rounded text-sm mt-2 hover:bg-gray-800 font-medium shadow-sm">Sudah Diambil</button>`;
+
+            return `
+                <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition">
+                    <div class="flex justify-between mb-2 pb-2 border-b border-dashed">
+                        <span class="font-bold text-sm text-gray-800">${order.studentName}</span>
+                        <span class="text-xs font-mono bg-gray-100 px-1 rounded text-gray-500">#${order.id.substr(-4)}</span>
                     </div>
-                    <div class="w-full lg:w-1/3">
-                        <div class="bg-white rounded-lg shadow-lg p-6 sticky top-8">
-                            <h2 class="text-2xl font-bold mb-4 border-b pb-2">Keranjang Anda</h2>
-                            <div id="cart-items-container" class="custom-scrollbar max-h-64 overflow-y-auto pr-2">
-                                <!-- Konten keranjang akan dirender oleh JavaScript -->
-                            </div>
-                            <div class="mt-6 border-t pt-4">
-                                <div class="flex justify-between items-center text-lg font-bold">
-                                    <span>Total</span><span id="cart-total">Rp 0</span>
-                                </div>
-                                <button id="checkout-button" class="w-full bg-blue-600 text-white rounded-lg py-3 mt-4 font-semibold hover:bg-blue-700 disabled:bg-gray-400">Pesan</button>
-                            </div>
-                        </div>
+                    <div class="text-xs text-gray-600 mb-3 space-y-1">
+                        ${order.items.map(i => `<div class="flex justify-between"><span>${i.name}</span> <span class="font-bold">x${i.qty}</span></div>`).join('')}
                     </div>
-                </div>
-                <div class="mt-12">
-                    <h2 class="text-2xl font-bold mb-4 border-b pb-2">Riwayat Pembelian Anda</h2>
-                    <div id="history-container" class="bg-white rounded-lg shadow-lg p-6"></div>
+                    <div class="flex justify-between items-center pt-2 border-t">
+                        <span class="text-xs text-gray-400">Total</span>
+                        <span class="font-bold text-orange-600 text-sm">${formatRupiah(order.total)}</span>
+                    </div>
+                    ${btnAction}
                 </div>
             `;
-            renderMenuForSiswa(state.menuItems);
-            renderCart();
-            renderSiswaHistory();
-            document.getElementById('search-bar').addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                const filteredItems = state.menuItems.filter(item => item.name.toLowerCase().includes(searchTerm));
-                renderMenuForSiswa(filteredItems);
-            });
-            document.getElementById('checkout-button').addEventListener('click', handleCheckout);
-            document.getElementById('menu-container').addEventListener('click', (e) => {
-                if (e.target.classList.contains('add-to-cart-btn')) handleAddToCart(parseInt(e.target.dataset.id));
-            });
-            document.getElementById('cart-items-container').addEventListener('click', (e) => {
-                const button = e.target;
-                const itemId = parseInt(button.dataset.id);
-                if (button.classList.contains('remove-from-cart-btn')) handleRemoveFromCart(itemId);
-                if (button.classList.contains('inc-btn')) handleChangeQuantity(itemId, 1);
-                if (button.classList.contains('dec-btn')) handleChangeQuantity(itemId, -1);
-            });
-            document.getElementById('history-container').addEventListener('click', (e) => {
-                if (e.target.classList.contains('cancel-order-btn')) {
-                    handleCancelOrder(parseInt(e.target.dataset.id));
-                }
-            });
-        };
-        
-        const renderMenuForSiswa = (itemsToRender) => {
-            const container = document.getElementById('menu-container');
-            if (itemsToRender.length === 0) {
-                 container.innerHTML = '<p class="text-gray-500 col-span-full text-center">Menu tidak ditemukan.</p>';
-                 return;
+        }
+
+        function updateOrderStatus(id, status) {
+            let orders = DB.get('k_orders');
+            const idx = orders.findIndex(o => o.id === id);
+            if(idx !== -1) {
+                orders[idx].status = status;
+                DB.set('k_orders', orders);
+                renderSellerDashboard();
             }
-            container.innerHTML = itemsToRender.map(item => `
-                <div class="item-card bg-white rounded-lg shadow-md overflow-hidden ${item.stock === 0 ? 'opacity-50' : ''}">
-                    <div class="relative">
-                        <img src="${item.image}" alt="${item.name}" class="w-full h-40 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/300x200?text=Gambar+Rusak';">
-                        ${item.stock === 0 ? '<div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white font-bold text-lg">HABIS</div>' : ''}
+        }
+
+        // --- 8. STUDENT LOGIC ---
+        function renderStudentMenu(category = 'all') {
+            const menu = DB.get('k_menu');
+            const filtered = category === 'all' ? menu : menu.filter(m => m.category === category);
+            const grid = document.getElementById('student-menu-grid');
+            
+            grid.innerHTML = filtered.map(m => `
+                <div class="bg-white p-4 rounded-xl shadow-sm border hover:border-orange-400 transition group cursor-pointer flex flex-col h-full" onclick="addToCart(${m.id})">
+                    <div class="text-center mb-3 text-5xl group-hover:scale-110 transition-transform py-2">${m.icon}</div>
+                    <h3 class="font-bold text-gray-800 text-sm mb-1 line-clamp-1">${m.name}</h3>
+                    <div class="text-xs text-gray-400 mb-3 flex items-center gap-1">
+                        <i class="fa-solid fa-store text-gray-300"></i> ${m.sellerId || 'Kantin'}
                     </div>
-                    <div class="p-4">
-                        <h3 class="text-lg font-bold">${item.name}</h3>
-                        <p class="text-gray-500 mb-2">Stok: ${item.stock}</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-lg font-semibold text-blue-600">${formatCurrency(item.price)}</span>
-                            <button data-id="${item.id}" class="add-to-cart-btn bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 text-sm" ${item.stock === 0 ? 'disabled' : ''}>Tambah</button>
-                        </div>
+                    <div class="flex justify-between items-center mt-auto pt-2 border-t border-dashed">
+                        <span class="text-orange-600 font-bold text-sm">${formatRupiah(m.price)}</span>
+                        <button class="w-7 h-7 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center text-xs hover:bg-orange-500 hover:text-white transition"><i class="fa-solid fa-plus"></i></button>
                     </div>
                 </div>
             `).join('');
-        };
+        }
 
-        const renderCart = () => {
+        function filterMenu(cat) {
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.toggle('bg-orange-500', b.dataset.cat === cat);
+                b.classList.toggle('text-white', b.dataset.cat === cat);
+                b.classList.toggle('bg-white', b.dataset.cat !== cat);
+            });
+            renderStudentMenu(cat);
+        }
+
+        function addToCart(id) {
+            const menu = DB.get('k_menu').find(m => m.id === id);
+            const exist = cart.find(c => c.id === id);
+            if(exist) exist.qty++;
+            else cart.push({...menu, qty: 1});
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const qty = cart.reduce((a, b) => a + b.qty, 0);
+            const badge = document.getElementById('cart-badge');
+            badge.innerText = qty;
+            badge.classList.toggle('hidden', qty === 0);
+
             const container = document.getElementById('cart-items-container');
-            const totalEl = document.getElementById('cart-total');
-            const checkoutBtn = document.getElementById('checkout-button');
-            if (state.cart.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center py-4">Keranjang masih kosong.</p>';
-                checkoutBtn.disabled = true;
-            } else {
-                checkoutBtn.disabled = false;
-                container.innerHTML = state.cart.map(item => `
-                    <div class="flex justify-between items-center mb-3">
+            let total = 0;
+            
+            container.innerHTML = cart.map(item => {
+                total += item.price * item.qty;
+                return `
+                    <div class="flex justify-between items-center bg-gray-50 p-2 rounded">
                         <div>
-                            <p class="font-semibold">${item.name}</p>
-                            <p class="text-sm text-gray-600">${formatCurrency(item.price)}</p>
+                            <div class="font-bold text-sm">${item.name}</div>
+                            <div class="text-xs text-gray-500">${formatRupiah(item.price)} x ${item.qty}</div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <div class="flex items-center border rounded">
-                                <button data-id="${item.id}" class="quantity-change-btn dec-btn px-2 py-1">-</button>
-                                <span class="px-2">${item.quantity}</span>
-                                <button data-id="${item.id}" class="quantity-change-btn inc-btn px-2 py-1">+</button>
-                            </div>
-                            <button data-id="${item.id}" class="remove-from-cart-btn font-bold text-red-500 text-xl">&times;</button>
+                            <button onclick="changeQty(${item.id}, -1)" class="w-6 h-6 bg-white border rounded text-sm">-</button>
+                            <span class="text-sm font-bold">${item.qty}</span>
+                            <button onclick="changeQty(${item.id}, 1)" class="w-6 h-6 bg-white border rounded text-sm">+</button>
                         </div>
                     </div>
-                `).join('');
-            }
-            totalEl.textContent = formatCurrency(state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0));
-        };
+                `;
+            }).join('');
+            if(cart.length === 0) container.innerHTML = '<div class="text-center text-gray-400 mt-10">Keranjang kosong</div>';
+            document.getElementById('cart-total-display').innerText = formatRupiah(total);
+            document.getElementById('btn-checkout').disabled = cart.length === 0;
+        }
 
-        const renderSiswaHistory = () => {
-            const container = document.getElementById('history-container');
-            const userTransactions = state.transactions.filter(t => t.userId === state.currentUser.id);
-            if(userTransactions.length === 0){
-                container.innerHTML = '<p class="text-gray-500">Anda belum pernah melakukan pembelian.</p>';
-                return;
-            }
-            container.innerHTML = `
-                <div class="overflow-x-auto"><table class="min-w-full bg-white">
-                    <thead class="bg-gray-200"><tr>
-                        <th class="py-2 px-4 text-left">Tanggal</th>
-                        <th class="py-2 px-4 text-left">Item</th>
-                        <th class="py-2 px-4 text-left">Total</th>
-                        <th class="py-2 px-4 text-left">Status</th>
-                        <th class="py-2 px-4 text-left">Aksi</th>
-                    </tr></thead>
-                    <tbody>${userTransactions.reverse().map(t => `
-                        <tr class="border-b">
-                            <td class="py-2 px-4">${formatDate(t.timestamp)}</td>
-                            <td class="py-2 px-4">${t.items.map(i => `${i.name} (x${i.quantity})`).join(', ')}</td>
-                            <td class="py-2 px-4">${formatCurrency(t.total)}</td>
-                            <td class="py-2 px-4">
-                                ${t.status === 'cancelled'
-                                    ? '<span class="font-semibold text-red-600">Dibatalkan</span>'
-                                    : '<span class="font-semibold text-green-600">Selesai</span>'
-                                }
-                            </td>
-                            <td class="py-2 px-4">
-                                ${t.status !== 'cancelled'
-                                    ? `<button data-id="${t.id}" class="cancel-order-btn bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600">Batalkan</button>`
-                                    : '<span>-</span>'
-                                }
-                            </td>
-                        </tr>`).join('')}
-                    </tbody>
-                </table></div>`;
-        };
-        
-        const renderMyMenu = (containerId) => {
-            const container = document.getElementById(containerId);
-            const myItems = state.menuItems.filter(item => item.sellerId === state.currentUser.id);
-            if (myItems.length === 0) {
-                container.innerHTML = '<p class="text-gray-500">Anda belum menambahkan menu. Klik "Tambah Menu" untuk memulai.</p>';
-                return;
-            }
-            container.innerHTML = `
-                <div class="overflow-x-auto"><table class="min-w-full bg-white">
-                    <thead class="bg-gray-200"><tr><th class="p-2 text-left">Nama</th><th class="p-2 text-left">Harga</th><th class="p-2 text-left">Stok</th><th class="p-2 text-left">Aksi</th></tr></thead>
-                    <tbody>${myItems.map(item => `
-                        <tr class="border-b"><td class="p-2">${item.name}</td><td class="p-2">${formatCurrency(item.price)}</td><td class="p-2">${item.stock}</td>
-                        <td class="p-2"><button data-id="${item.id}" class="delete-item-btn text-red-500 hover:text-red-700 font-semibold">Hapus</button></td></tr>`).join('')}
-                    </tbody>
-                </table></div>
-            `;
-            container.querySelectorAll('.delete-item-btn').forEach(btn => btn.addEventListener('click', (e) => handleDeleteMenuItem(parseInt(e.target.dataset.id))));
-        };
+        function changeQty(id, delta) {
+            const item = cart.find(c => c.id === id);
+            item.qty += delta;
+            if(item.qty <= 0) cart = cart.filter(c => c.id !== id);
+            updateCartUI();
+        }
 
-        // --- PENJUAL DASHBOARD ---
-        const renderPenjualDashboard = () => {
-            mainContent.innerHTML = `
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold">Kelola Menu Anda</h2>
-                    <button id="add-item-btn" class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700">Tambah Menu</button>
-                </div>
-                <div id="my-menu-container" class="bg-white rounded-lg shadow-lg p-6"></div>
-                 <div class="mt-12">
-                    <h2 class="text-2xl font-bold mb-4 border-b pb-2">Riwayat Transaksi Toko Anda</h2>
-                    <div id="penjual-history-container" class="bg-white rounded-lg shadow-lg p-6"></div>
-                </div>
-            `;
-            renderMyMenu('my-menu-container');
-            renderPenjualHistory();
-            document.getElementById('add-item-btn').addEventListener('click', () => openModal('add-item-modal'));
-        };
+        function handleCheckout() {
+            if(cart.length === 0) return;
+            const orderId = 'ORD-' + Date.now();
+            const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
+            const newOrder = {
+                id: orderId,
+                studentId: DB.currentUser.id,
+                studentName: DB.currentUser.name,
+                items: cart,
+                total: total,
+                date: new Date().toISOString(),
+                status: 'waiting'
+            };
+            const orders = DB.get('k_orders');
+            orders.push(newOrder);
+            DB.set('k_orders', orders);
 
-        const renderPenjualHistory = () => {
-             const container = document.getElementById('penjual-history-container');
-             const myItemIds = state.menuItems.filter(i => i.sellerId === state.currentUser.id).map(i => i.id);
-             const myTransactions = state.transactions.filter(t => t.items.some(i => myItemIds.includes(i.id)));
-             
-             if(myTransactions.length === 0) {
-                container.innerHTML = '<p class="text-gray-500">Belum ada transaksi untuk menu Anda.</p>';
-                return;
-             }
+            document.getElementById('receipt-id').innerText = orderId;
+            document.getElementById('receipt-total').innerText = formatRupiah(total);
+            document.getElementById('receipt-modal').classList.remove('hidden');
+            toggleCart();
+            cart = [];
+            updateCartUI();
+            renderStudentHistory();
+        }
 
-             container.innerHTML = `
-                <div class="overflow-x-auto"><table class="min-w-full bg-white">
-                    <thead class="bg-gray-200"><tr><th class="p-2 text-left">Tanggal</th><th class="p-2 text-left">Pembeli</th><th class="p-2 text-left">Item Terjual</th><th class="p-2 text-left">Total</th></tr></thead>
-                    <tbody>${myTransactions.reverse().map(t => {
-                        const buyer = state.users.find(u => u.id === t.userId);
-                        const itemsSold = t.items.filter(i => myItemIds.includes(i.id));
-                        return `
-                        <tr class="border-b"><td class="p-2">${formatDate(t.timestamp)}</td><td class="p-2">${buyer ? buyer.username : 'N/A'}</td>
-                        <td class="p-2">${itemsSold.map(i => `${i.name} (x${i.quantity})`).join(', ')}</td>
-                        <td class="p-2">${formatCurrency(itemsSold.reduce((sum, i) => sum + (i.price * i.quantity), 0))}</td></tr>
-                        `}).join('')}
-                    </tbody>
-                </table></div>`;
-        };
-
-        // --- ADMIN DASHBOARD ---
-        const renderAdminDashboard = () => {
-            mainContent.innerHTML = `
-                <div class="mb-12">
-                    <h2 class="text-2xl font-bold mb-4">Manajemen Pengguna</h2>
-                    <div id="user-management-container" class="bg-white rounded-lg shadow-lg p-6"></div>
-                </div>
-                <div>
-                    <h2 class="text-2xl font-bold mb-4">Laporan Transaksi Keseluruhan</h2>
-                    <div id="admin-transactions-container" class="bg-white rounded-lg shadow-lg p-6"></div>
-                </div>
-            `;
-            renderUserManagement();
-            renderAdminTransactions();
-        };
-
-        const renderUserManagement = () => {
-            const container = document.getElementById('user-management-container');
-            container.innerHTML = `
-                <div class="overflow-x-auto"><table class="min-w-full bg-white">
-                    <thead class="bg-gray-200"><tr><th class="p-2 text-left">Username</th><th class="p-2 text-left">Peran</th><th class="p-2 text-left">Aksi</th></tr></thead>
-                    <tbody>${state.users.map(user => `
-                        <tr class="border-b"><td class="p-2">${user.username}</td><td class="p-2">${user.role}</td><td class="p-2">
-                        ${user.role !== 'admin' ? `<button data-id="${user.id}" class="delete-user-btn text-red-500 hover:text-red-700 font-semibold">Hapus</button>` : 'Tidak ada aksi'}
-                        </td></tr>`).join('')}
-                    </tbody>
-                </table></div>`;
-            container.querySelectorAll('.delete-user-btn').forEach(btn => btn.addEventListener('click', (e) => handleDeleteUser(parseInt(e.target.dataset.id))));
-        };
-        
-        const renderAdminTransactions = () => {
-             const container = document.getElementById('admin-transactions-container');
-             if(state.transactions.length === 0){
-                container.innerHTML = '<p class="text-gray-500">Belum ada transaksi sama sekali.</p>';
-                return;
-             }
-             container.innerHTML = `
-                <div class="overflow-x-auto"><table class="min-w-full bg-white">
-                    <thead class="bg-gray-200"><tr><th class="p-2 text-left">Tanggal</th><th class="p-2 text-left">Pembeli</th><th class="p-2 text-left">Total</th></tr></thead>
-                    <tbody>${state.transactions.slice().reverse().map(t => {
-                        const buyer = state.users.find(u => u.id === t.userId);
-                        return `<tr class="border-b"><td class="p-2">${formatDate(t.timestamp)}</td><td class="p-2">${buyer ? buyer.username : 'Akun Dihapus'}</td><td class="p-2">${formatCurrency(t.total)}</td></tr>`
-                    }).join('')}</tbody>
-                </table></div>`;
-        };
-
-        // =================================================================
-        // ACTIONS (Siswa, Penjual, Admin)
-        // =================================================================
-        // Siswa Actions
-        const handleAddToCart = (itemId) => {
-            const itemInMenu = state.menuItems.find(item => item.id === itemId);
-            const itemInCart = state.cart.find(item => item.id === itemId);
-            if (itemInMenu.stock <= (itemInCart ? itemInCart.quantity : 0)) { alert('Stok tidak mencukupi!'); return; }
-            if (itemInCart) { itemInCart.quantity++; } else { state.cart.push({ ...itemInMenu, quantity: 1 }); }
-            renderCart();
-        };
-        const handleRemoveFromCart = (itemId) => { state.cart = state.cart.filter(item => item.id !== itemId); renderCart(); };
-        const handleChangeQuantity = (itemId, change) => {
-            const itemInCart = state.cart.find(item => item.id === itemId);
-            if (!itemInCart) return;
-            if (change > 0) {
-                const itemInMenu = state.menuItems.find(item => item.id === itemId);
-                if (itemInCart.quantity >= itemInMenu.stock) { alert('Stok tidak mencukupi!'); return; }
-            }
-            itemInCart.quantity += change;
-            if (itemInCart.quantity <= 0) { handleRemoveFromCart(itemId); } else { renderCart(); }
-        };
-        const handleCheckout = () => {
-            const newTransaction = { id: Date.now(), userId: state.currentUser.id, items: [...state.cart], total: state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0), timestamp: Date.now(), status: 'completed' };
-            state.transactions.push(newTransaction);
-            state.cart.forEach(cartItem => {
-                const menuItem = state.menuItems.find(item => item.id === cartItem.id);
-                if (menuItem) menuItem.stock -= cartItem.quantity;
-            });
-            state.cart = [];
-            db.push();
-            openModal('checkout-modal');
-            renderApp();
-        };
-        const handleCancelOrder = (transactionId) => {
-            if (!confirm('Apakah Anda yakin ingin membatalkan pesanan ini? Stok akan dikembalikan.')) {
-                return;
-            }
-            const transaction = state.transactions.find(t => t.id === transactionId);
-            if (transaction && transaction.status !== 'cancelled') {
-                transaction.items.forEach(orderItem => {
-                    const menuItem = state.menuItems.find(item => item.id === orderItem.id);
-                    if (menuItem) {
-                        menuItem.stock += orderItem.quantity;
-                    }
-                });
-                transaction.status = 'cancelled';
-                db.push();
-                renderSiswaDashboard();
-            } else {
-                alert('Pesanan tidak ditemukan atau sudah dibatalkan.');
-            }
-        };
-
-        // Penjual Actions
-        const handleAddMenuItem = async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('item-name').value;
-            const price = parseInt(document.getElementById('item-price').value);
-            const stock = parseInt(document.getElementById('item-stock').value);
-            const imageFile = document.getElementById('item-image').files[0];
-            if (!imageFile) {
-                alert('Silakan pilih gambar untuk menu.');
-                return;
-            }
-            const toBase64 = file => new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-            try {
-                const imageBase64 = await toBase64(imageFile);
-                const newItem = {
-                    id: Date.now(),
-                    sellerId: state.currentUser.id,
-                    name, price, stock,
-                    image: imageBase64
-                };
-                state.menuItems.push(newItem);
-                db.push();
-                e.target.reset();
-                closeModal('add-item-modal');
-                renderApp();
-            } catch (error) {
-                console.error("Error converting image to Base64:", error);
-                alert("Gagal memproses gambar. Silakan coba lagi.");
-            }
-        };
-        const handleDeleteMenuItem = (itemId) => {
-            if (confirm('Apakah Anda yakin ingin menghapus menu ini?')) {
-                state.menuItems = state.menuItems.filter(item => item.id !== itemId);
-                db.push();
-                renderApp();
-            }
-        };
-
-        // Admin Actions
-        const handleDeleteUser = (userId) => {
-            if (confirm('Apakah Anda yakin ingin menghapus akun ini? Ini tidak dapat diurungkan.')) {
-                state.users = state.users.filter(user => user.id !== userId);
-                db.push();
+        // --- HELPER & UTILS ---
+        function formatRupiah(num) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
+        }
+        function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
+        function toggleCart() { document.getElementById('cart-sidebar').classList.toggle('hidden'); }
+        function selectIcon(el, icon) {
+            document.querySelectorAll('.selected-icon').forEach(e => e.classList.remove('bg-gray-200', 'selected-icon'));
+            el.classList.add('bg-gray-200', 'selected-icon');
+            document.getElementById('new-menu-icon').value = icon;
+        }
+        function deleteUser(id) {
+             if(confirm('Hapus user ini?')) {
+                let users = DB.get('k_users');
+                users = users.filter(u => u.id !== id);
+                DB.set('k_users', users);
                 renderAdminDashboard();
             }
-        };
-
-
-        // =================================================================
-        // INITIALIZATION & EVENT LISTENERS
-        // =================================================================
-        db.init();
-        
-        showRegisterLink.addEventListener('click', (e) => { e.preventDefault(); loginFormContainer.classList.add('hidden'); registerFormContainer.classList.remove('hidden'); });
-        showLoginLink.addEventListener('click', (e) => { e.preventDefault(); registerFormContainer.classList.add('hidden'); loginFormContainer.classList.remove('hidden'); });
-        loginForm.addEventListener('submit', handleLogin);
-        registerForm.addEventListener('submit', handleRegister);
-        logoutButton.addEventListener('click', handleLogout);
-        document.getElementById('add-item-form').addEventListener('submit', handleAddMenuItem);
-        document.body.addEventListener('click', (e) => {
-            if (e.target.dataset.modalClose) closeModal(e.target.dataset.modalClose);
-        });
-        
-        renderApp(); // Initial render
-    });
+        }
+        function resetAllData() {
+            if(confirm('PERINGATAN: Semua data akan dihapus!')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+        function renderStudentHistory() { /* Code reused from prev version */
+            const orders = DB.get('k_orders');
+            const myOrders = orders.filter(o => o.studentId === DB.currentUser.id).reverse();
+            const container = document.getElementById('student-history-list');
+            container.innerHTML = myOrders.map(o => {
+                let statusColor = 'bg-gray-100 text-gray-600'; let statusText = 'Menunggu';
+                if(o.status === 'process') { statusColor = 'bg-blue-100 text-blue-600'; statusText = 'Sedang Dimasak'; }
+                if(o.status === 'ready') { statusColor = 'bg-green-100 text-green-600 animate-pulse'; statusText = 'SIAP DIAMBIL'; }
+                if(o.status === 'done') { statusColor = 'bg-gray-200 text-gray-800'; statusText = 'Selesai'; }
+                return `
+                    <div class="border rounded-lg p-3 bg-gray-50">
+                        <div class="flex justify-between mb-2"><span class="font-bold text-sm">Order #${o.id.substr(-4)}</span><span class="px-2 py-0.5 rounded text-xs font-bold ${statusColor}">${statusText}</span></div>
+                        <div class="text-xs text-gray-600 mb-2">${o.items.map(i => i.name + ' x' + i.qty).join(', ')}</div>
+                        <div class="flex justify-between items-center border-t pt-2"><span class="text-xs text-gray-400">${new Date(o.date).toLocaleTimeString()}</span><span class="font-bold text-orange-600">${formatRupiah(o.total)}</span></div>
+                    </div>`;
+            }).join('');
+            if(myOrders.length === 0) container.innerHTML = '<p class="text-center text-gray-400 text-sm">Belum ada riwayat pesanan.</p>';
+        }
     </script>
 </body>
 </html>
-
-
